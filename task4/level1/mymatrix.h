@@ -19,12 +19,9 @@ class MyMatrix final
         }
         MyMatrix( const MyMatrix &rhs ) : column_size_( rhs.column_size_ ), row_size_( rhs.row_size_ )
         {
-            if( this != &rhs )
-            {
-                for( int i = 0; i < column_size_; i++ )
-                    for( int j = 0; j < row_size_; j++ )
-                        matrix_[i][j] = rhs.matrix_[i][j];
-            }
+            for( int i = 0; i < column_size_; i++ )
+                for( int j = 0; j < row_size_; j++ )
+                    matrix_[i][j] = rhs.matrix_[i][j];
         }
         MyMatrix &operator=( const MyMatrix &rhs )
         {
@@ -39,15 +36,12 @@ class MyMatrix final
         }
         MyMatrix( MyMatrix &&rhs )
         {
-            if( this != &rhs )
-            {
-                column_size_ = rhs.column_size_;
-                row_size_ = rhs.row_size_;
-                matrix_ = rhs.matrix_;
-                values_ = rhs.values_;
-                rhs.matrix_ = NULL;
-                rhs.values_ = NULL;
-            }
+            column_size_ = rhs.column_size_;
+            row_size_ = rhs.row_size_;
+            matrix_ = rhs.matrix_;
+            values_ = rhs.values_;
+            rhs.matrix_ = NULL;
+            rhs.values_ = NULL;
         }
         MyMatrix &operator=( MyMatrix &&rhs )
         {
