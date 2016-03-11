@@ -4,27 +4,19 @@
 
 const char * const INPUT = "input.txt";
 
-inline MyMatrix inMatrix( std::ifstream &fin )
-{
-    int column = 0, row = 0, value = 0;
-    fin >> column;
-    fin >> row;
-    MyMatrix a( column, row );
-    for( int i = 0; i < column; i++ )
-        for( int j = 0; j < row; j++ )
-        {
-            fin >> value;
-            a.put( i, j, value );
-        }
-    return a;
-}
 
 int main()
 {
+    int column = 0, row = 0;
     std::ifstream fin( INPUT );
-    MyMatrix a = inMatrix( fin );
-    MyMatrix b = inMatrix( fin );
+    fin >> column >> row;
+    MyMatrix a( column, row );
+    a.read( fin );
+    fin >> column >> row;
+    MyMatrix b( column, row );
+    b.read( fin );
     fin.close();
-    printMatrix( KroneckerProduct( a, b ) );
+    MyMatrix res = KroneckerProduct( a, b );
+    res.write( std::cout );
     return 0;
 }

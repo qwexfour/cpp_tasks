@@ -2,18 +2,26 @@
 #include <iostream>
 
 
-void printMatrix( const MyMatrix &a )
+void MyMatrix::write( std::ostream &fout )
 {
-    int column = a.getColumnSize();
-    int row = a.getRowSize();
-    for( int i = 0; i < column; i++ )
+    for( int i = 0; i < column_size_; i++ )
     {
-        for( int j = 0; j < row; j++ )
-            std::cout << a.get( i, j ) << " ";
-        std::cout << std::endl;
+        for( int j = 0; j < row_size_; j++ )
+            fout << matrix_[i][j] << " ";
+        fout << std::endl;
     }
 }
 
+void MyMatrix::read( std::ifstream &fin )
+{
+    int value = 0;
+    for( int i = 0; i < column_size_; i++ )
+        for( int j = 0; j < row_size_; j++ )
+        {
+            fin >> value;
+            matrix_[i][j] = value;
+        }
+}
 
 MyMatrix KroneckerProduct( const MyMatrix &a, const MyMatrix &b )
 {

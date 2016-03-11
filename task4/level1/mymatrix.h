@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <cassert>
+#include <fstream>
 
 class MyMatrix final
 {
@@ -56,6 +57,7 @@ class MyMatrix final
             }
             return *this;
         }
+        
         void put( int row, int column, int value )
         {
             assert( row >= 0 && row < column_size_ && column >= 0 && column < row_size_ );
@@ -66,15 +68,18 @@ class MyMatrix final
             assert( row >= 0 && row < column_size_ && column >= 0 && column < row_size_ );
             return matrix_[row][column];
         }
+        
         int getRowSize() const { return row_size_; }
         int getColumnSize() const { return column_size_; }
+        void read( std::ifstream &fin );
+        void write( std::ostream &fout );
         ~MyMatrix()
         {
             delete[] matrix_;
             delete[] values_;
         }
     private:
-        int column_size_, row_size_;
+        int column_size_, row_size_;  //the number of elements in column and row respectively
         int **matrix_;
         int *values_;
 };
