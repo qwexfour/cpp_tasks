@@ -23,17 +23,30 @@ void MyMatrix::read( std::ifstream &fin )
         }
 }
 
+void MyMatrix::swap( MyMatrix &rhs )
+{
+    MyMatrix tmp = std::move( *this );
+    *this = std::move( rhs );
+    rhs = std::move( tmp );
+}
+
+MyMatrix &MyMatrix::KroneckerProductEq( const MyMatrix &rhs )
+{
+    int res_column = column_size_ * rhs.column_size_, res_row = row_size_ * rhs.row_size_;
+    MyMatrix tmp( res_column, res_row );
+    tmp.swap( *this );
+    //writing the result of Kronecker product
+    for( int i_tmp = 0; i_tmp < tmp.column_size_; i_tmp++ )
+        for( int j_tmp = 0; j_tmp < tmp.row_size_; j_tmp++ )
+            for( int i_rhs = 0; i_rhs < rhs.column_size_; i_rhs++ )
+                for( int j_rhs = 0; j_rhs < rhs.row_size_; j_rhs++ )
+                    matrix_[i_tmp * rhs.column_size_ + i_rhs][j_tmp * rhs.row_size_ + j_rhs] = tmp.matrix_[i_tmp][j_tmp] * rhs.matrix_[i_rhs][j_rhs];
+    
+    return *this;
+}
+
 MyMatrix KroneckerProduct( const MyMatrix &a, const MyMatrix &b )
 {
-    int a_column = a.getColumnSize();
-    int a_row = a.getRowSize();
-    int b_column = b.getColumnSize();
-    int b_row = b.getRowSize();
-    MyMatrix res( a_column * b_column, a_row * b_row );
-    for( int i_a = 0; i_a < a_column; i_a++ )
-        for( int j_a = 0; j_a < a_row; j_a++ )
-            for( int i_b = 0; i_b < b_column; i_b++ )
-                for( int j_b = 0; j_b < b_row; j_b++ )
-                    res.put( i_a * b_column + i_b, j_a * b_row + j_b, a.get( i_a, j_a ) * b.get( i_b, j_b ) );
-    return res;
+    MyMatrix tmp = a;
+    return tmp.KroneckerProductEq( b );
 }

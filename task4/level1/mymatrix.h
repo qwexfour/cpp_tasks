@@ -18,7 +18,7 @@ class MyMatrix final
                 matrix_[k] = &values_[i];
             }
         }
-        MyMatrix( const MyMatrix &rhs ) : column_size_( rhs.column_size_ ), row_size_( rhs.row_size_ )
+        MyMatrix( const MyMatrix &rhs ) : MyMatrix( rhs.column_size_, rhs.row_size_ )
         {
             for( int i = 0; i < column_size_; i++ )
                 for( int j = 0; j < row_size_; j++ )
@@ -50,6 +50,8 @@ class MyMatrix final
             {
                 column_size_ = rhs.column_size_;
                 row_size_ = rhs.row_size_;
+                delete[] matrix_;   //Or we will lose the memory
+                delete[] values_;
                 matrix_ = rhs.matrix_;
                 values_ = rhs.values_;
                 rhs.matrix_ = NULL;
@@ -57,7 +59,7 @@ class MyMatrix final
             }
             return *this;
         }
-        
+        /* 
         void put( int row, int column, int value )
         {
             assert( row >= 0 && row < column_size_ && column >= 0 && column < row_size_ );
@@ -68,9 +70,10 @@ class MyMatrix final
             assert( row >= 0 && row < column_size_ && column >= 0 && column < row_size_ );
             return matrix_[row][column];
         }
-        
+        */
         int getRowSize() const { return row_size_; }
         int getColumnSize() const { return column_size_; }
+        MyMatrix &KroneckerProductEq( const MyMatrix &a );
         void read( std::ifstream &fin );
         void write( std::ostream &fout );
         ~MyMatrix()
@@ -82,6 +85,7 @@ class MyMatrix final
         int column_size_, row_size_;  //the number of elements in column and row respectively
         int **matrix_;
         int *values_;
+        void swap( MyMatrix &rhs );
 };
 
 MyMatrix KroneckerProduct( const MyMatrix &a, const MyMatrix &b );

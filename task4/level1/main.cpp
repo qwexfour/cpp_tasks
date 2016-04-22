@@ -18,5 +18,8 @@ int main()
     fin.close();
     MyMatrix res = KroneckerProduct( a, b );
     res.write( std::cout );
+    //a.swap( b );
+    //a.write( std::cout );
+    //b.write( std::cout );
     return 0;
 }
