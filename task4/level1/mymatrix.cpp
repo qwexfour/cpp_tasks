@@ -34,7 +34,7 @@ MyMatrix &MyMatrix::KroneckerProductEq( const MyMatrix &rhs )
 {
     int res_column = column_size_ * rhs.column_size_, res_row = row_size_ * rhs.row_size_;
     MyMatrix tmp( res_column, res_row );
-    tmp.swap( *this );
+    std::swap( *this, tmp );
     //writing the result of Kronecker product
     for( int i_tmp = 0; i_tmp < tmp.column_size_; i_tmp++ )
         for( int j_tmp = 0; j_tmp < tmp.row_size_; j_tmp++ )
