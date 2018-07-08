@@ -18,11 +18,26 @@ class MyMatrix final
                 matrix_[k] = &values_[i];
             }
         }
+        /* //dangerous
+        MyMatrix( int value ) : MyMatrix( 1, 1 )
+        {
+            values_[0] = value;    
+        }
+        */
         MyMatrix( const MyMatrix &rhs ) : MyMatrix( rhs.column_size_, rhs.row_size_ )
         {
             for( int i = 0; i < column_size_; i++ )
                 for( int j = 0; j < row_size_; j++ )
                     matrix_[i][j] = rhs.matrix_[i][j];
+        }
+        MyMatrix( MyMatrix &&rhs )
+        {
+            column_size_ = rhs.column_size_;
+            row_size_ = rhs.row_size_;
+            matrix_ = rhs.matrix_;
+            values_ = rhs.values_;
+            rhs.matrix_ = NULL;
+            rhs.values_ = NULL;
         }
         MyMatrix &operator=( const MyMatrix &rhs )
         {
@@ -35,22 +50,13 @@ class MyMatrix final
                     matrix_[i][j] = rhs.matrix_[i][j];
             return *this;
         }
-        MyMatrix( MyMatrix &&rhs )
-        {
-            column_size_ = rhs.column_size_;
-            row_size_ = rhs.row_size_;
-            matrix_ = rhs.matrix_;
-            values_ = rhs.values_;
-            rhs.matrix_ = NULL;
-            rhs.values_ = NULL;
-        }
         MyMatrix &operator=( MyMatrix &&rhs )
         {
             if( this != &rhs )
             {
                 column_size_ = rhs.column_size_;
                 row_size_ = rhs.row_size_;
-                delete[] matrix_;   //Or we will lose the memory
+                delete[] matrix_;
                 delete[] values_;
                 matrix_ = rhs.matrix_;
                 values_ = rhs.values_;
@@ -59,6 +65,30 @@ class MyMatrix final
             }
             return *this;
         }
+        MyMatrix &operator+=( const MyMatrix &rhs )
+        {
+            assert( rhs.row_size_ == row_size_ );
+            assert( rhs.column_size_ == column_size_ );
+            
+            for( int i = 0; i < column_size_; i++ )
+                for( int j = 0; j < row_size_; j++ )
+                {
+                    matrix_[i][j] += rhs.matrix_[i][j];
+                }
+
+            return *this;
+        }
+        MyMatrix &operator*=( const int value )
+        {
+            for( int i = 0; i < column_size_; i++ )
+                for( int j = 0; j < row_size_; j++ )
+                {
+                    matrix_[i][j] *= value;
+                }
+
+            return *this;
+        }
+        MyMatrix &operator*=( const MyMatrix &rhs );
         /* 
         void put( int row, int column, int value )
         {
@@ -89,7 +119,9 @@ class MyMatrix final
 };
 
 MyMatrix KroneckerProduct( const MyMatrix &a, const MyMatrix &b );
-void printMatrix( const MyMatrix &a );
-
+MyMatrix operator+( const MyMatrix &a, const MyMatrix &b );
+MyMatrix operator*( const MyMatrix &a, const MyMatrix &b );
+MyMatrix operator*( const int a, const MyMatrix &b );
+MyMatrix operator*( const MyMatrix &a, const int b );
 
 #endif

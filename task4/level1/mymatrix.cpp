@@ -30,6 +30,30 @@ void MyMatrix::swap( MyMatrix &rhs )
     rhs = std::move( tmp );
 }
 
+MyMatrix &MyMatrix::operator*=( const MyMatrix &rhs )
+{
+    assert( row_size_ == rhs.column_size_ );
+    int res_column = column_size_, res_row = rhs.row_size_;
+    MyMatrix tmp( res_column, res_row );
+    std::swap( *this, tmp );
+    // *this = tmp * rhs
+    for( int i = 0; i < res_column; i++ )
+    {
+        for( int j = 0; j < res_row; j++ )
+        {
+            int value = 0;
+            for( int k = 0; k < tmp.row_size_; k++ )
+            {
+                value += tmp.matrix_[i][k] * rhs.matrix_[k][j];
+            }
+            matrix_[i][j] = value;
+        }
+    }
+
+    return *this;
+}
+    
+
 MyMatrix &MyMatrix::KroneckerProductEq( const MyMatrix &rhs )
 {
     int res_column = column_size_ * rhs.column_size_, res_row = row_size_ * rhs.row_size_;
@@ -50,3 +74,28 @@ MyMatrix KroneckerProduct( const MyMatrix &a, const MyMatrix &b )
     MyMatrix tmp = a;
     return tmp.KroneckerProductEq( b );
 }
+
+MyMatrix operator+( const MyMatrix &a, const MyMatrix &b )
+{
+    MyMatrix tmp = a;
+    return tmp += b;
+}
+
+MyMatrix operator*( const MyMatrix &a, const MyMatrix &b )
+{
+    MyMatrix tmp = a;
+    return tmp *= b;
+}
+
+MyMatrix operator*( const int a, const MyMatrix &b )
+{
+    MyMatrix tmp = b;
+    return tmp *= a;
+}
+
+MyMatrix operator*( const MyMatrix &a, const int b )
+{
+    MyMatrix tmp = a;
+    return tmp *= b;
+}
+
