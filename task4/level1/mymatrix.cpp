@@ -99,3 +99,58 @@ MyMatrix operator*( const MyMatrix &a, const int b )
     return tmp *= b;
 }
 
+MyMatrix MyMatrix::getArithComp( const int row, const int column ) const
+{
+    assert( column_size_ > 1 && row_size_ > 1 );
+    assert( check_index( row, column ) );
+
+    MyMatrix arith_comp( column_size_ - 1, row_size_ - 1 );
+    
+    // [i][j] is for *this
+    // [i_ac][j_ac] is for arith_comp
+    for( int i = 0, i_ac = 0; i < column_size_; i++, i_ac++ )
+    {
+        for( int j = 0, j_ac = 0; j < row_size_; j++, j_ac++ )
+        {
+            if( i == row ) //exclude the row
+            {
+                i++;
+            }
+            if( j == column ) //exclude the column
+            {
+                j++;
+            }
+            arith_comp.matrix_[i_ac][j_ac] = matrix_[i][j];
+        }
+    }
+
+    return arith_comp;
+}
+
+int MyMatrix::determinant() const
+{
+    assert( column_size_ == row_size_ );
+
+    if( column_size_ == 1 )
+    {
+        return values_[0];
+    }
+
+    int result = 0;
+    for( int j = 0; j < row_size_; j++ )
+    {
+        MyMatrix arith_comp = this->getArithComp( 0, j );
+
+        if( j % 2 == 0 )
+        {
+            result += matrix_[0][j] * arith_comp.determinant();
+        }
+        else
+        {
+            result -= matrix_[0][j] * arith_comp.determinant();
+        }
+    }
+
+    return result;
+}
+
