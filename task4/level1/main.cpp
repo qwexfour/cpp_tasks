@@ -1,22 +1,22 @@
 #include <iostream>
 #include <fstream>
-#include "mymatrix.h"
+#include "mymatrix.hpp"
 
 const char * const INPUT = "input.txt";
 
 
 int main()
 {
-    int column = 0, row = 0;
+    size_t column = 0, row = 0;
     std::ifstream fin( INPUT );
     fin >> column >> row;
-    MyMatrix a( column, row );
+    MyMatrix<int> a( column, row );
     a.read( fin );
     fin >> column >> row;
-    MyMatrix b( column, row );
+    MyMatrix<int> b( column, row );
     b.read( fin );
     fin >> column >> row;
-    MyMatrix c( column, row );
+    MyMatrix<int> c( column, row );  //<double> will kill everything
     c.read( fin );
     fin.close();
     
@@ -27,8 +27,8 @@ int main()
     std::cout << "c:" << std::endl;
     c.write( std::cout );
     std::cout << std::endl;
-    
-    MyMatrix kp = KroneckerProduct( a, b );
+
+    MyMatrix<int> kp = KroneckerProduct( a, b );
     std::cout << "KroneckerProduct( a, b ):" << std::endl;
     kp.write( std::cout );
     std::cout << std::endl;
@@ -41,7 +41,7 @@ int main()
     b.write( std::cout );
     std::cout << std::endl;
 
-    MyMatrix mul = 10 * a * b * 10;
+    MyMatrix<int> mul = 10 * a * b * 10;
     std::cout << "10 * a * b * 10:" << std::endl;
     mul.write( std::cout );
 
@@ -58,9 +58,8 @@ int main()
     std::cout << ( a == a ) << " " << ( a != b ) << std::endl;
 
     std::cout << "c.determinant():" << std::endl;
-    std::cout << c.determinant() << std::endl;
+    std::cout << c.determinantLE() << std::endl;
 
     //a += b; //error
-
     return 0;
 }
